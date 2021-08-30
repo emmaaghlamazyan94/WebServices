@@ -5,12 +5,16 @@ import io.restassured.response.ValidatableResponse;
 import org.apache.http.HttpStatus;
 import org.hamcrest.core.Is;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class WebServicesTest {
-    String baseURI = "https://jsonplaceholder.typicode.com/";
-    String basePath = "users";
 
+    @BeforeMethod
+    public void setUp() {
+        RestAssured.baseURI = "https://jsonplaceholder.typicode.com/";
+        RestAssured.basePath = "users";
+    }
 
     @Test
     public void getStatusCode() {
@@ -18,7 +22,7 @@ public class WebServicesTest {
                 .given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get(baseURI + basePath)
+                .get()
                 .andReturn();
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK, "User is not found");
     }
@@ -28,7 +32,7 @@ public class WebServicesTest {
         Response response = RestAssured
                 .given()
                 .when()
-                .get(baseURI + basePath)
+                .get()
                 .andReturn();
         String contentTypeHeader = response.getHeader("Content-Type");
         String expectedContentTypeHeader = "application/json; charset=utf-8";
@@ -41,7 +45,7 @@ public class WebServicesTest {
         ValidatableResponse response = RestAssured
                 .given()
                 .when()
-                .get(baseURI + basePath)
+                .get()
                 .then()
                 .assertThat()
                 .body("size()", Is.is(10));
